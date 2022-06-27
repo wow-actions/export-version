@@ -1,0 +1,41 @@
+name: Export Version
+description: Extract package version from package.json and export it
+author: bubkoo <bubkoo.wy@gmail.com>
+branding:
+  icon: send
+  color: green
+inputs:
+  GITHUB_TOKEN:
+    description: Your GitHub token for authentication
+    required: true
+
+  source:
+    description: The package.json path or the directory path contains package.json
+    default: ./package.json
+    required: false
+
+  target:
+    description: The auto generated target file path
+    default: ./src/version.ts
+    required: false
+
+  template:
+    description: The code template to export version
+    required: false
+    default: |
+      /* eslint-disable */
+
+      /**
+      * Auto generated version file, do not modify it!
+      */
+      const version = '{{ version }}'
+      export { version }
+
+  commitMessage:
+    description: Commit message of the github action.
+    required: false
+    default: 'chore: update version file [skip ci]'
+
+runs:
+  using: node12
+  main: dist/index.js
