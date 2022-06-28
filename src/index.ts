@@ -1,5 +1,5 @@
 import fs from 'fs'
-import path from 'path'
+// import path from 'path'
 import mustache from 'mustache'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
