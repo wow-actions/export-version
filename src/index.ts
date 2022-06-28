@@ -50,32 +50,33 @@ async function run() {
 
     const { context } = github
     const octokit = getOctokit()
-    // const targetFile = options.target
-    // const getContent = async () => {
-    //   try {
-    //     return await octokit.rest.repos.getContent({
-    //       ...github.context.repo,
-    //       path: targetFile,
-    //     })
-    //   } catch (err) {
-    //     return null
-    //   }
-    // }
+    const targetFile = options.target
+    const getContent = async () => {
+      try {
+        return await octokit.rest.repos.getContent({
+          ...github.context.repo,
+          path: targetFile,
+        })
+      } catch (err) {
+        return null
+      }
+    }
 
-    // const res = fs.existsSync(targetFile) ? await getContent() : null
-    // const oldContent = res
-    //   ? Buffer.from((res.data as any).content, 'base64').toString()
-    //   : null
+    const res = fs.existsSync(targetFile) ? await getContent() : null
+    const oldContent = res
+      ? Buffer.from((res.data as any).content, 'base64').toString()
+      : null
 
-    const oldContent = null
+    core.info(JSON.stringify(res, null, 2))
+    core.info(oldContent || '')
 
     if (newContent !== oldContent) {
       await octokit.rest.repos.createOrUpdateFileContents({
         ...context.repo,
-        path: options.target,
+        path: targetFile,
         content: Buffer.from(newContent).toString('base64'),
         message: options.commitMessage,
-        sha: undefined,
+        sha: res ? (res.data as any).sha : undefined,
       })
       core.info(`Generated: "${options.target}"`)
     } else {

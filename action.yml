@@ -11,12 +11,12 @@ inputs:
 
   source:
     description: The package.json path or the directory path contains package.json
-    default: ./package.json
+    default: package.json
     required: false
 
   target:
     description: The auto generated target file path
-    default: ./src/version.ts
+    default: src/version.ts
     required: false
 
   template:
