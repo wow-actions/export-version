@@ -34,26 +34,21 @@ async function run() {
 
     const { context } = github
     const octokit = getOctokit()
-    const getFile = async (file: string) => {
-      const { data } = await octokit.rest.git.getTree({
-        ...context.repo,
-        tree_sha: context.sha,
-        recursive: 'true',
-      })
-
-      const found = data.tree.find((item) => item.path === file)
-      if (found) {
-        return octokit.request('GET /repos/:owner/:repo/git/blobs/:file_sha', {
-          ...context.repo,
-          file_sha: found.sha,
+    const targetFile = options.target
+    const getContent = async () => {
+      try {
+        return await octokit.rest.repos.getContent({
+          ...github.context.repo,
+          path: targetFile,
         })
+      } catch (err) {
+        return null
       }
-      return null
     }
 
-    const res = await getFile(options.target)
+    const res = await getContent()
     const oldContent = res
-      ? Buffer.from(res.data.content, 'base64').toString()
+      ? Buffer.from((res.data as any).content, 'base64').toString()
       : null
 
     if (newContent !== oldContent) {
@@ -62,7 +57,7 @@ async function run() {
         path: options.target,
         content: Buffer.from(newContent).toString('base64'),
         message: options.commitMessage,
-        sha: res ? res.data.sha : undefined,
+        sha: res ? (res.data as any).sha : undefined,
       })
       core.info(`Generated: "${options.target}"`)
     } else {
