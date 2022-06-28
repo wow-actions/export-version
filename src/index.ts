@@ -1,5 +1,5 @@
 import fs from 'fs'
-// import path from 'path'
+import path from 'path'
 import mustache from 'mustache'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
@@ -24,26 +24,29 @@ async function run() {
 
     core.info(`inputs: \n ${JSON.stringify(options, null, 2)}`)
 
-    const sourcePath = options.source
-    // if (!fs.existsSync(sourcePath)) {
-    //   throw new Error(
-    //     `The given source file/directory "${sourcePath}" do not exist`,
-    //   )
-    // }
+    let sourcePath = options.source
+    if (!fs.existsSync(sourcePath)) {
+      throw new Error(
+        `The given source file/directory "${sourcePath}" do not exist`,
+      )
+    }
 
-    // const stat = fs.statSync(sourcePath)
-    // if (stat.isDirectory()) {
-    //   sourcePath = path.join(options.source, 'package.json')
-    //   if (!fs.existsSync(sourcePath)) {
-    //     throw new Error(
-    //       `The given source directory "${options.source}" do not contain a package.json file`,
-    //     )
-    //   }
-    // }
+    const stat = fs.statSync(sourcePath)
+    if (stat.isDirectory()) {
+      sourcePath = path.join(options.source, 'package.json')
+      if (!fs.existsSync(sourcePath)) {
+        throw new Error(
+          `The given source directory "${options.source}" do not contain a package.json file`,
+        )
+      }
+    }
 
     const version = JSON.parse(fs.readFileSync(sourcePath, 'utf8'))
       .version as string
     const newContent = mustache.render(options.template, { version })
+
+    core.info('content: ')
+    core.info(newContent)
 
     const { context } = github
     const octokit = getOctokit()
