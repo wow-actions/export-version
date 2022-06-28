@@ -45,12 +45,17 @@ async function run() {
       .version as string
     const newContent = mustache.render(options.template, { version })
 
-    core.info('content: ')
-    core.info(newContent)
+    core.debug('content: ')
+    core.debug(newContent)
 
     const { context } = github
     const octokit = getOctokit()
-    const targetFile = options.target
+
+    let targetFile = options.target
+    if (targetFile.startsWith('./')) {
+      targetFile = targetFile.substring(2)
+    }
+
     const getContent = async () => {
       try {
         return await octokit.rest.repos.getContent({
@@ -62,13 +67,13 @@ async function run() {
       }
     }
 
-    const res = fs.existsSync(targetFile) ? await getContent() : null
+    const res = await getContent()
     const oldContent = res
       ? Buffer.from((res.data as any).content, 'base64').toString()
       : null
 
-    core.info(JSON.stringify(res, null, 2))
-    core.info(oldContent || '')
+    core.debug(JSON.stringify(res, null, 2))
+    core.debug(oldContent || '')
 
     if (newContent !== oldContent) {
       await octokit.rest.repos.createOrUpdateFileContents({

@@ -28,8 +28,8 @@ inputs:
       /**
        * Auto generated version file, do not modify it!
        */
-      const version = '{{ version }}'
-      export { version }
+      const version = '{{ version }}';
+      export { version };
 
   commitMessage:
     description: Commit message of the github action.
