@@ -62,7 +62,7 @@ async function run() {
       }
     }
 
-    const res = await getContent()
+    const res = fs.existsSync(targetFile) ? await getContent() : null
     const oldContent = res
       ? Buffer.from((res.data as any).content, 'base64').toString()
       : null
