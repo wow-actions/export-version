@@ -19,4 +19,4 @@ jobs:
           env_name: bot_token
       - uses: ./
         with:
-          GITHUB_TOKEN: ${{ secrets.bot_token }}
+          GITHUB_TOKEN: ${{ env.bot_token }}
