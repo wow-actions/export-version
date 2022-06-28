@@ -3,30 +3,43 @@ import path from 'path'
 import mustache from 'mustache'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import { getOctokit, getInputs } from './util'
+
+function getOctokit() {
+  const token = core.getInput('GITHUB_TOKEN', { required: true })
+  return github.getOctokit(token)
+}
+
+function getInputs() {
+  return {
+    source: core.getInput('source'),
+    target: core.getInput('target'),
+    template: core.getInput('template'),
+    commitMessage: core.getInput('commitMessage'),
+  }
+}
 
 async function run() {
   try {
     const options = getInputs()
 
-    core.debug(`inputs: \n ${JSON.stringify(options, null, 2)}`)
+    core.info(`inputs: \n ${JSON.stringify(options, null, 2)}`)
 
-    let sourcePath = options.source
-    if (!fs.existsSync(sourcePath)) {
-      throw new Error(
-        `The given source file/directory "${sourcePath}" do not exist`,
-      )
-    }
+    const sourcePath = options.source
+    // if (!fs.existsSync(sourcePath)) {
+    //   throw new Error(
+    //     `The given source file/directory "${sourcePath}" do not exist`,
+    //   )
+    // }
 
-    const stat = fs.statSync(sourcePath)
-    if (stat.isDirectory()) {
-      sourcePath = path.join(options.source, 'package.json')
-      if (!fs.existsSync(sourcePath)) {
-        throw new Error(
-          `The given source directory "${options.source}" do not contain a package.json file`,
-        )
-      }
-    }
+    // const stat = fs.statSync(sourcePath)
+    // if (stat.isDirectory()) {
+    //   sourcePath = path.join(options.source, 'package.json')
+    //   if (!fs.existsSync(sourcePath)) {
+    //     throw new Error(
+    //       `The given source directory "${options.source}" do not contain a package.json file`,
+    //     )
+    //   }
+    // }
 
     const version = JSON.parse(fs.readFileSync(sourcePath, 'utf8'))
       .version as string
