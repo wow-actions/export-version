@@ -32,7 +32,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-The default config will generate a file "src/version.ts" with the following content:
+The default config will generate a file `"src/version.ts"` with the following content:
 
 ```ts
 /* eslint-disable */
