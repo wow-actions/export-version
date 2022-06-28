@@ -32,6 +32,32 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+The default config will generate a file "src/version.ts" with the following content:
+
+```ts
+/* eslint-disable */
+
+/**
+ * Auto generated version file, do not modify it!
+ */
+const version = 'xxx'
+export { version }
+```
+
+## Inputs
+
+Various inputs are defined to let you configure the action:
+
+> Note: [Workflow command and parameter names are not case-sensitive](https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-commands-for-github-actions#about-workflow-commands).
+
+| Name | Description | Default |
+| --- | --- | --- |
+| `GITHUB_TOKEN` | The GitHub token for authentication | N/A |
+| `source` | The `package.json` path or the directory path contains a `package.json` file | `'package.json'` |
+| `target` | The auto generated target file path | `'src/version.ts'` |
+| `template` | Template to render the target file content <br> Placeholder `{{version}}` is supportted | `...` |
+| `commitMessage` | Commit message to create/update the target file | `'chore: update version file [skip ci]'` |
+
 ## 🔖 License
 
 The scripts and documentation in this project are released under the [MIT License](LICENSE)
