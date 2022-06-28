@@ -2,8 +2,8 @@ name: Export Version
 description: Extract package version from package.json and export it
 author: bubkoo <bubkoo.wy@gmail.com>
 branding:
-  icon: send
-  color: green
+  icon: at-sign
+  color: yellow
 inputs:
   GITHUB_TOKEN:
     description: Your GitHub token for authentication
